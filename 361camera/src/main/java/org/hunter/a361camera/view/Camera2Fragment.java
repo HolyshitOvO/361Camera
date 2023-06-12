@@ -147,18 +147,17 @@ public class Camera2Fragment extends Fragment
 	}
 
 	/**
-	 * A counter for tracking corresponding {@link CaptureRequest}s and {@link CaptureResult}s
-	 * across the {@link CameraCaptureSession} capture callbacks.
+	 * 一个计数器，用于跟踪相应的 {@link CaptureRequest} 和 {@link CaptureResult} 跨 {@link CameraCaptureSession} 捕获回调。
 	 */
 	private final AtomicInteger mRequestCounter = new AtomicInteger();
 	/**
-	 * A {@link Semaphore} to prevent the app from exiting before closing the camera.
+	 * {@link Semaphore} 防止应用程序在关闭相机之前退出。
 	 */
 	private final Semaphore mCameraOpenCloseLock = new Semaphore(1);
 	/** 锁定保护摄像头状态。 */
 	private final Object mCameraStateLock = new Object();
 	/**
-	 * Request ID to {@link ImageSaver.ImageSaverBuilder} mapping for in-progress JPEG captures.
+	 * 正在进行的JPEG捕获的映射的请求ID。{@link ImageSaver.ImageSaverBuilder}
 	 */
 	private final TreeMap<Integer,ImageSaver.ImageSaverBuilder> mJpegResultQueue = new TreeMap<>();
 	/**
@@ -166,7 +165,7 @@ public class Camera2Fragment extends Fragment
 	 */
 	private final TreeMap<Integer,ImageSaver.ImageSaverBuilder> mRawResultQueue = new TreeMap<>();
 	/**
-	 * A {@link Handler} for showing {@link Toast}s on the UI thread.
+	 * 在UI线程内，这个 {@link Handler} 用于展示 {@link Toast}
 	 */
 	private final Handler mMessageHandler = new Handler(Looper.getMainLooper()) {
 		@Override
@@ -183,15 +182,12 @@ public class Camera2Fragment extends Fragment
 	//
 	// 以下状态在UI和后台线程中都使用。名称中带有“Locked”的方法在调用时需要持有mCameraStateLock。
 	/**
-	 * An {@link OrientationEventListener} used to determine when device rotation has occurred.
-	 * This is mainly necessary for when the device is rotated by 180 degrees, in which case
-	 * onCreate or onConfigurationChanged is not called as the view dimensions remain the same,
-	 * but the orientation of the has changed, and thus the preview rotation must be updated.
+	 * 用于确定设备何时发生旋转的 {@link OrientationEventListener}。这主要是在设备旋转180度时所必需的
+	 * 在这种情况下，不会调用onCreate或onConfigurationChanged，因为视图尺寸保持不变
+	 * 但方向发生了变化，因此必须更新预览旋转。
 	 */
 	private OrientationEventListener mOrientationListener;
-	/**
-	 * An {@link AutoFitTextureView} for camera preview.
-	 */
+	/** {@link AutoFitTextureView} 用于预览相机 */
 	private AutoFitTextureView mTextureView;
 	private ImageView mImageShow;
 	private ImageView mTimer;
@@ -199,7 +195,7 @@ public class Camera2Fragment extends Fragment
 	private ImageView mFlashBtn;
 	private ImageView mIvFocus;
 	private ImageView mIvHdr;
-	/** 要预览的当前曲面 */
+	/** 当前预览的 Surface */
 	private Surface mPreviewSurface;
 	/** 当前的自动对焦模式，当我们点击对焦时，该模式将切换到自动 */
 	private AutoFocusMode mControlAFMode = AutoFocusMode.CONTINUOUS_PICTURE;
@@ -207,7 +203,7 @@ public class Camera2Fragment extends Fragment
 	private static final MeteringRectangle[] ZERO_WEIGHT_3A_REGION = AutoFocusHelper.getZeroWeightRegion();
 	private MeteringRectangle[] mAFRegions = ZERO_WEIGHT_3A_REGION;
 	private MeteringRectangle[] mAERegions = ZERO_WEIGHT_3A_REGION;
-	/** HDR modre，0表示HDR关闭，而表示HDR打开。 */
+	/** HDR modre，0表示HDR关闭，而1表示HDR打开。 */
 	private int mHdrMode;
 
 	enum AutoFocusMode {
@@ -238,9 +234,7 @@ public class Camera2Fragment extends Fragment
 	 * callbacks from the {@link CameraDevice} and {@link CameraCaptureSession}s.
 	 */
 	private HandlerThread mBackgroundThread;
-	/**
-	 * ID of the current {@link CameraDevice}.
-	 */
+	/** 前摄还是后摄 {@link CameraDevice}. */
 	private String mCameraId = CAMERA_BACK; // 默认背面摄像头
 	/**
 	 * A {@link CameraCaptureSession } for camera preview.
@@ -322,7 +316,7 @@ public class Camera2Fragment extends Fragment
 	 * A {@link CameraCaptureSession.CaptureCallback} that handles events for the preview and
 	 * pre-capture sequence.
 	 */
-	private CameraCaptureSession.CaptureCallback mPreCaptureCallback
+	private final CameraCaptureSession.CaptureCallback mPreCaptureCallback
 			= new CameraCaptureSession.CaptureCallback() {
 
 		private void process(CaptureResult result) {
@@ -1103,18 +1097,13 @@ public class Camera2Fragment extends Fragment
 		return false;
 	}
 
-	/**
-	 * Opens the camera specified by {@link #mCameraId}.
-	 */
+	/** 打开由指定的相机 {@link #mCameraId}. */
 	@SuppressWarnings("MissingPermission")
 	private void openCamera() {
 		if (!setUpCameraOutputs()) {
 			return;
 		}
-		if (!hasAllPermissionsGranted()) {
-			requestCameraPermissions();
-			return;
-		}
+		// 	requestCameraPermissions();
 
 		Activity activity = getActivity();
 		CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
@@ -1145,11 +1134,11 @@ public class Camera2Fragment extends Fragment
 
 	/** 请求使用相机和保存图片所需的权限。 */
 	private void requestCameraPermissions() {
-		if (shouldShowRationale()) {
-			PermissionConfirmationDialog.newInstance().show(getChildFragmentManager(),"dialog");
-		} else {
-			FragmentCompat.requestPermissions(this,CAMERA_PERMISSIONS,REQUEST_CAMERA_PERMISSIONS);
-		}
+		// if (shouldShowRationale()) {
+		// 	PermissionConfirmationDialog.newInstance().show(getChildFragmentManager(),"dialog");
+		// } else {
+		// 	FragmentCompat.requestPermissions(this,CAMERA_PERMISSIONS,REQUEST_CAMERA_PERMISSIONS);
+		// }
 	}
 
 	/**
@@ -1871,7 +1860,7 @@ public class Camera2Fragment extends Fragment
 			private File mFile;
 			private CaptureResult mCaptureResult;
 			private CameraCharacteristics mCharacteristics;
-			private Context mContext;
+			private final Context mContext;
 			private RefCountedAutoCloseable<ImageReader> mReader;
 
 			/**
