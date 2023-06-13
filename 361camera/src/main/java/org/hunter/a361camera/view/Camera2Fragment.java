@@ -94,6 +94,10 @@ public class Camera2Fragment extends Fragment
 	public static final String CAMERA_BACK = "0";
 	public static final int TIME_INTERVAL = 1000;
 	public static final int IMAGE_SHOW = 100;
+
+
+
+
 	public static final int FOCUS_HIDE = 101;
 	/** 从屏幕旋转转换为JPEG方向。 */
 	private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -235,7 +239,8 @@ public class Camera2Fragment extends Fragment
 	 */
 	private HandlerThread mBackgroundThread;
 	/** 前摄还是后摄 {@link CameraDevice}. */
-	private String mCameraId = CAMERA_BACK; // 默认背面摄像头
+	// private String mCameraId = CAMERA_BACK; // 默认背面摄像头
+	private String mCameraId = CAMERA_FRONT; // 默认背面摄像头
 	/**
 	 * A {@link CameraCaptureSession } for camera preview.
 	 */
